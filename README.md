@@ -1,10 +1,44 @@
 # Providing a vault
 
-## Providing an untracked vault
+There are 2 kinds of vaults: standard ones (in binary or source form) and tracked ones (only in binary form).
 
-This kind of node is to be build from Maidsafe source repository.
+## Providing a standard vault
 
-On any Linux host (VPS or physical machine):
+### Get binary from Maidsafe release
+
+Download zip file from [Maidsafe release](https://github.com/maidsafe/safe_vault/releases/tag/0.17.2) corresponding to
+your platform, extract the vault executable and configure it with the set of configuration files defined in
+["vaults" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/vaults).
+
+For example on linux platform:
+
+```bash
+# Download zip file
+wget https://github.com/maidsafe/safe_vault/releases/download/0.17.2/safe_vault-v0.17.2-linux-x64.zip
+
+# Unzip file
+unzip safe_vault-v0.17.2-linux-x64.zip
+
+# Get configuration files
+git clone https://github.com/Thierry61/tfa_safenetwork.git
+
+# Configure vault
+mkdir app
+cd app
+cp ../safe_vault-v0.17.2-linux-x64/safe_vault .
+cp ../tfa_safenetwork/vaults/*.config .
+
+# Launch vault
+./safe_vault
+```
+
+### Compile source from Maidsafe repository
+
+This kind of node is to be build from [safe_vault](https://github.com/maidsafe/safe_vault.git) Maidsafe repository
+and configured with the set of configuration files defined in
+["vaults" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/vaults).
+
+On a Linux host with rust 1.30.1 (NOT THE LATEST VERSION!):
 
 ```bash
 # Build vault from Maidsafe source
@@ -16,33 +50,34 @@ cargo build --release
 cd ..
 git clone https://github.com/Thierry61/tfa_safenetwork.git
 
-# Configuring the vault
+# Configure vault
 mkdir app
 cd app
 cp ../safe_vault/target/release/safe_vault .
-cp ../tfa_safenetwork/vaults/*.config
+cp ../tfa_safenetwork/vaults/*.config .
 
-# Launch the vault
+# Launch vault
 ./safe_vault
 ```
 
 ## Providing a tracked vault
 
-This kind of node is provided in a docker image form.
+This kind of node is provided in binary form (as a docker image). It uses an out of band network that collects data from
+participating vaults. Aggregate data are displayed on [this site](http://116.203.42.154/).
 
-Install docker on a Linux host and then join the safenet swarm with the following command:
+Install docker on a Linux host and then join the network with the following command:
 
 ```bash
-docker swarm join --token SWMTKN-1-3eqzfowpfpsmknaiqitojn560jzfeqapkvgpvy0cj8wqb1oxkw-9up8ds418mt3u03x2wyd9y1ps 45.76.106.252:2377
+docker swarm join --token SWMTKN-1-3eqzfowpfpsmknaiqitojn560jzfeqapkvgpvy0cj8wqb1oxkw-9up8ds418mt3u03x2wyd9y1ps 116.203.25.212:2377
 ```
 
 To be considered a sponsor and participate in the Honor Roll, provide at least 2 tracked nodes
-on different hosts whose hostname contains a dash character ('-') and with a common part before
-this character. This common part will be your name as a sponsor.
+on different hosts whose hostname contains a double dash sequence ('--') with a common string before
+this sequence. This common string will be your name as a sponsor.
 For example with the following hostnames:
 
-- BIGCORP-SW
-- BIGCORP-NE
+- BIGCORP--SW
+- BIGCORP--NE
 
 You will be participating as BIGCORP sponsor.
 
@@ -50,13 +85,19 @@ Advantages associated with this title:
 
 - Be listed in the Honor Roll. This list is ordered by decreasing number of nodes, so
   provide many nodes to be ranked at the top of the list
-- Show your nodes in the galaxy of constellations (go to Parameters and select your sponsor name)
+- Show your nodes in the galaxy of constellations
+- Monitor your own nodes in the dashboard
+
+To stop your vault, issue following command:
+
+```bash
+docker swarm leave
+```
 
 # Accessing the network from a client
 
-Replace existing configuration files with the ones in clients directory.
-Two files are needed ....crust.config and ....routing.config
+Replace existing crust configuration file with the one in
+["clients" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/clients).
 
-Pair of files are provided for "Peruse" and "SAFE Browser" standard clients. For other clients,
-just take the files of one pair and rename them by replacing the ... part with the base name of
-the client program.
+The file is provided for "SAFE Browser". For other clients, just rename it
+by replacing "SAFE Browser" part with the base name of the client program.
