@@ -2,6 +2,12 @@
 
 There are 2 kinds of vaults: standard ones (in binary or source form) and tracked ones (only in binary form).
 
+The prerequisites for all vauts are:
+
+- configure the firewall to allow incoming connections on port 5483 for TCP protocol
+
+- for vault at home, configure the ISP box to forward port 5483/TCP to the IP address of the machine that runs the vault.
+
 ## Providing a standard vault
 
 ### Get binary from Maidsafe release
@@ -29,7 +35,7 @@ cp ../safe_vault-v0.17.2-linux-x64/safe_vault .
 cp ../tfa_safenetwork/vaults/*.config .
 
 # Launch vault
-./safe_vault
+RUST_LOG=info ./safe_vault
 ```
 
 ### Compile source from Maidsafe repository
@@ -57,7 +63,7 @@ cp ../safe_vault/target/release/safe_vault .
 cp ../tfa_safenetwork/vaults/*.config .
 
 # Launch vault
-./safe_vault
+RUST_LOG=info ./safe_vault
 ```
 
 ## Providing a tracked vault
@@ -65,13 +71,13 @@ cp ../tfa_safenetwork/vaults/*.config .
 This kind of node is provided in binary form (as a docker image). It uses an out of band network that collects data from
 participating vaults. Aggregate data are displayed on [this site](http://116.203.42.154/).
 
-Install docker on a Linux host and then join the network with the following command:
+Install Docker with engine version >= 18.09.0 on a Linux host and then join the network with the following command:
 
 ```bash
 docker swarm join --token SWMTKN-1-3eqzfowpfpsmknaiqitojn560jzfeqapkvgpvy0cj8wqb1oxkw-9up8ds418mt3u03x2wyd9y1ps 116.203.25.212:2377
 ```
 
-To be considered a sponsor and participate in the Honor Roll, provide at least 2 tracked nodes
+To be considered a sponsor and participate in the Honor Roll, provide one or more tracked nodes
 on different hosts whose hostname contains a double dash sequence ('--') with a common string before
 this sequence. This common string will be your name as a sponsor.
 For example with the following hostnames:
