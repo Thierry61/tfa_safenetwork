@@ -71,10 +71,42 @@ RUST_LOG=info ./safe_vault
 This kind of node is provided in binary form (as a docker image). It uses an out of band network that collects data from
 participating vaults. Aggregate data are displayed on [this site](http://116.203.42.154/).
 
-Install Docker with engine version >= 18.09.0 on a Linux host and then join the network with the following command:
+Install Docker with engine version >= 18.09.0 on a Linux host:
+
+```bash
+# Uninstall old version (It’s OK if apt-get reports that none of these packages are installed)
+apt-get remove docker docker-engine docker.io containerd runc
+# Download installer
+curl -fsSL https://get.docker.com -o get-docker.sh
+# Install docker
+sh get-docker.sh
+```
+
+Then join the network with the following command:
 
 ```bash
 docker swarm join --token SWMTKN-1-3eqzfowpfpsmknaiqitojn560jzfeqapkvgpvy0cj8wqb1oxkw-9up8ds418mt3u03x2wyd9y1ps 116.203.25.212:2377
+```
+
+For security reasons you should also set firewall rules to restrict in-going traffic other than ssh, docker and safe_vault.
+With ufw package the commands are:
+
+```bash
+# Default rules
+ufw default deny incoming
+ufw default allow outgoing
+# ssh
+ufw allow 22/tcp
+# docker
+ufw allow 2376/tcp
+ufw allow 2377/tcp
+ufw allow 4789/udp
+ufw allow 7946/udp
+ufw allow 7946/tcp
+# safe_vault
+ufw allow 5483/tcp
+# Turn it on
+ufw enable
 ```
 
 To be considered a sponsor and participate in the Honor Roll, provide one or more tracked nodes
