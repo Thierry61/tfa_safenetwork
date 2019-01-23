@@ -1,0 +1,47 @@
+# Copy this sample file next to the binary to test (e.g. in "./target/release")
+
+# It is a simplified version of installer/docker/config/log.toml with addition
+# of "aws" appender and "vault_stats" logger using it.
+
+# "async_file" appender was removed because even if it was not used some
+# empty Node-nnn.log files were created.
+
+# If set, log4rs will scan the file at the specified rate in seconds for
+# changes and automatically reconfigure the loggers.
+refresh_rate: 30 seconds
+
+appenders:
+  async_console:
+    kind: async_console
+    pattern: "{({l}):1.1} {d(%y-%m-%d %H:%M:%S%.6f)(utc)} {m}{n}"
+  aws:
+    kind: async_web_socket
+    server_url: "ws://172.19.255.250:55555" # Make sure to either spawn a web server at this address or
+                                            # change this URL.
+    session_id: "magic-value"
+  file:
+    kind: file
+    path: "safe_vault.log"
+    encoder:
+      pattern: "{({l}):1.1} {d(%y-%m-%d %H:%M:%S%.6f)(utc)} {m}{n}"
+
+root:
+  level: warn
+  appenders:
+  - async_console
+
+loggers:
+  crust:
+    level: info
+  routing:
+    level: info
+  routing_stats:
+    level: info
+  safe_vault:
+    level: info
+  vault_stats:
+    level: info
+    additive: false
+    appenders:
+    - aws
+    - async_console

@@ -71,6 +71,8 @@ RUST_LOG=info ./safe_vault
 This kind of node is provided in binary form (as a docker image). It uses an out of band network that collects data from
 participating vaults. Aggregate data are displayed on [this site](http://116.203.42.154/).
 
+### Install Docker
+
 Install Docker with engine version >= 18.09.0 on a Linux host:
 
 ```bash
@@ -82,11 +84,15 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 ```
 
+### Start the vault
+
 Then join the network with the following command:
 
 ```bash
 docker swarm join --token SWMTKN-1-3eqzfowpfpsmknaiqitojn560jzfeqapkvgpvy0cj8wqb1oxkw-9up8ds418mt3u03x2wyd9y1ps 116.203.25.212:2377
 ```
+
+### Define firewall rules
 
 For security reasons you should also set firewall rules to restrict in-going traffic other than ssh, docker and safe_vault.
 With ufw package the commands are:
@@ -109,6 +115,8 @@ ufw allow 5483/tcp
 ufw enable
 ```
 
+### Inscribe your name in the galaxy
+
 To be considered a sponsor and participate in the Honor Roll, provide one or more tracked nodes
 on different hosts whose hostname contains a double dash sequence ('--') with a common string before
 this sequence. This common string will be your name as a sponsor.
@@ -126,7 +134,38 @@ Advantages associated with this title:
 - Show your nodes in the galaxy of constellations
 - Monitor your own nodes in the dashboard
 
-To stop your vault, issue following command:
+### Get the vault logs
+
+By default your vault doesn't show or store any logs. But you can switch it to another mode
+where logs are stored in a file by changing log.yml configuration file.
+
+To do that copy with_logs.yml file from ["docker" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/docker)
+in your host and then copy this config file into the running container:
+```bash
+docker cp with_logs.yml $(docker ps -q):/app/log.yml
+```
+
+Start continuous display on screen:
+```bash
+docker exec -it $(docker ps -q) tail -f safe_vault.log
+```
+
+Stop continuous display: ^C
+
+Copy log file from container to host:
+```bash
+docker cp $(docker ps -q):/app/safe_vault.log .
+```
+
+To switch back to no logs mode, copy without_logs.yml file from ["docker" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/docker)
+in your host and then copy this config file into the running container:
+```bash
+docker cp without_logs.yml $(docker ps -q):/app/log.yml
+```
+
+### Stop your vault
+
+To properly stop your vault, issue following command:
 
 ```bash
 docker swarm leave
