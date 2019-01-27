@@ -86,6 +86,19 @@ sh get-docker.sh
 
 ### Start the vault
 
+Create an initially empty log file with:
+```bash
+touch /var/log/safe_vault.log
+```
+
+If there is an existing log file from a previous vault, messages from the new vault
+will be appended to it. If this is not what you want, just truncate it with:
+```bash
+echo -n > /var/log/safe_vault.log
+```
+
+But in all cases /var/log/safe_vault.log file must exist, empty or not.
+
 Then join the network with the following command:
 
 ```bash
@@ -136,31 +149,24 @@ Advantages associated with this title:
 
 ### Get the vault logs
 
-By default your vault doesn't show or store any logs. But you can switch it to another mode
-where logs are stored in a file by changing log.yml configuration file.
-
-To do that copy with_logs.yml file from ["docker" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/docker)
-in your host and then copy this config file into the running container:
+Your vault store logs in /var/log/safe_vault.log file. To display them continuously on the screen, issue following command:
 ```bash
-docker cp with_logs.yml $(docker ps -q):/app/log.yml
+tail -f /var/log/safe_vault.log
 ```
 
-Start continuous display on screen:
+You can modify the logging configuration by modifying log.yml file. Modifications are dynamic, meaning
+you can change configuration without stopping the running vault.
+
+Get configuration file with:
 ```bash
-docker exec -it $(docker ps -q) tail -f safe_vault.log
+docker cp $(docker ps -q):/app/log.yml .
 ```
 
-Stop continuous display: ^C
+Modify log.yml with the editor of your choice.
 
-Copy log file from container to host:
+Put back new configuration file with:
 ```bash
-docker cp $(docker ps -q):/app/safe_vault.log .
-```
-
-To switch back to no logs mode, copy without_logs.yml file from ["docker" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/docker)
-in your host and then copy this config file into the running container:
-```bash
-docker cp without_logs.yml $(docker ps -q):/app/log.yml
+docker cp log.yml $(docker ps -q):/app/log.yml
 ```
 
 ### Stop your vault
