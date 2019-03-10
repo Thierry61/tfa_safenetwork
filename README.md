@@ -44,7 +44,7 @@ This kind of node is to be build from [safe_vault](https://github.com/maidsafe/s
 and configured with the set of configuration files defined in
 ["vaults" directory](https://github.com/Thierry61/tfa_safenetwork/tree/master/vaults).
 
-On a Linux host with rust 1.30.1 (NOT THE LATEST VERSION!):
+On a Linux host with latest rust version:
 
 ```bash
 # Build vault from Maidsafe source
@@ -149,7 +149,7 @@ Advantages associated with this title:
 
 ### Get the vault logs
 
-Your vault store logs in /var/log/safe_vault.log file. To display them continuously on the screen, issue following command:
+Your vault stores logs in /var/log/safe_vault.log file. To display them continuously on the screen, issue following command:
 ```bash
 tail -f /var/log/safe_vault.log
 ```
@@ -171,7 +171,8 @@ docker cp log.yml $(docker ps -q):/app/log.yml
 
 ### Stop your vault
 
-To properly stop your vault, issue following command:
+Whenever your vault crashes or the host is rebooted, your vault is automatically restarted.
+To properly stop your vault, disconnect it from the swarm with following command:
 
 ```bash
 docker swarm leave
